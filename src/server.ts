@@ -1,22 +1,16 @@
 import fastify from 'fastify'
-import crypto from 'node:crypto'
-import { knex } from './database'
 import { env } from './env'
+import { dailyDietRoutes } from './routes/dailyDiet'
+import { userRoute } from './routes/users'
 
 const app = fastify()
 
-app.get('/user', async () => {
-  const user = await knex('users')
-    .insert({
-      id: crypto.randomUUID(),
-      username: 'Daniel',
-      age: 21,
-    })
-    .returning('*')
-
-  return user
+app.register(userRoute, {
+  prefix: '/users',
 })
-
+app.register(dailyDietRoutes, {
+  prefix: '/meals',
+})
 app
   .listen({
     port: env.PORT,
