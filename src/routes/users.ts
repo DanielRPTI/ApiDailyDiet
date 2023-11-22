@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify'
 import { knex } from '../database'
 import { z } from 'zod'
-import { randomUUID, randomUUID } from 'node:crypto'
+import { randomUUID } from 'node:crypto'
 
 export async function userRoute(app: FastifyInstance) {
   app.get('/', async () => {
@@ -21,9 +21,14 @@ export async function userRoute(app: FastifyInstance) {
     // Insere um coockie toda vez que é criado um usuario, é setado automaticamente um coockie
 
     const userId = randomUUID()
+    // cria um cookie com o nome user_id recebendo o dado do userId acima
+    reply.cookie('user_id', userId, {
+      path: '/',
+      maxAge: 1000 * 60 * 60 * 24 * 1, // 1 day to expire
+    })
 
     await knex('users').insert({
-      id: randomUUID(),
+      id: userId,
       username,
       age,
     })
