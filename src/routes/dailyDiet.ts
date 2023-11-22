@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { FastifyInstance } from 'fastify'
 import { knex } from '../database'
 import { z } from 'zod'
@@ -8,9 +9,9 @@ export async function dailyDietRoutes(app: FastifyInstance) {
   app.addHook('preHandler', checkUserId)
   // Lista todas as refeições cadastradas
   app.get('/', async (request, reply) => {
-    const { user_id } = request.cookies
+    const { userId } = request.cookies
     const listAllMealsCreated = await knex('meals')
-      .where({ user_id })
+      .where('user_id', userId)
       .select('*')
 
     return {
@@ -18,9 +19,10 @@ export async function dailyDietRoutes(app: FastifyInstance) {
     }
   })
 
+  // Criação de dados para a tabela Meals
   app.post('/', async (request, reply) => {
     // pega o cookie de identificação de sessão do usuario
-    const { user_id } = request.cookies
+    const { userId } = request.cookies
 
     // Tipagem dos dados presente no corpo da requisição
     const creatMealBodySchema = z.object({
@@ -40,7 +42,7 @@ export async function dailyDietRoutes(app: FastifyInstance) {
       name,
       description,
       within_diet,
-      user_id,
+      user_id: userId,
       consumed_at,
     })
     return reply.status(201).send()

@@ -22,7 +22,7 @@ export async function userRoute(app: FastifyInstance) {
 
     const userId = randomUUID()
     // cria um cookie com o nome user_id recebendo o dado do userId acima
-    reply.cookie('user_id', userId, {
+    reply.cookie('userId', userId, {
       path: '/',
       maxAge: 1000 * 60 * 60 * 24 * 1, // 1 day to expire
     })

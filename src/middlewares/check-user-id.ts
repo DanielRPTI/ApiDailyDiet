@@ -4,9 +4,9 @@ export async function checkUserId(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const { user_id } = request.cookies
+  const userId = request.cookies.userId
 
-  if (!user_id) {
+  if (!userId) {
     return reply.status(401).send({
       error: 'Unauthorized',
     })

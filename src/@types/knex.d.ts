@@ -16,7 +16,7 @@ declare module 'knex/types/tables' {
       name: string
       description: string
       consumed_at: string
-      within_diet: boolean | number
+      within_diet: boolean
     }
   }
 }
