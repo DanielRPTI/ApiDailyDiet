@@ -18,6 +18,21 @@ export async function dailyDietRoutes(app: FastifyInstance) {
       listAllMealsCreated,
     }
   })
+  // Lista uma unica refeição com ID
+  app.get('/:id', async (request, reply) => {
+    const { userId } = request.cookies
+    const getMealParamsSchema = z.object({
+      id: z.string().uuid(),
+    })
+    const { id } = getMealParamsSchema.parse(request.params)
+    const meal = await knex('meals').where({
+      user_id: userId,
+      id,
+    })
+    return {
+      meal,
+    }
+  })
 
   // Criação de dados para a tabela Meals
   app.post('/', async (request, reply) => {
