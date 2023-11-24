@@ -11,7 +11,11 @@ export async function dailyDietRoutes(app: FastifyInstance) {
   app.get('/', async (request, reply) => {
     const { userId } = request.cookies
     const meals = await knex('meals').where('user_id', userId).select('*')
-
+    if (meals.indexOf(0)) {
+      return reply.status(400).send({
+        message: 'You dont have any meal created, try to insert something!',
+      })
+    }
     return {
       meals,
     }
@@ -129,11 +133,20 @@ export async function dailyDietRoutes(app: FastifyInstance) {
       id: z.string().uuid(),
     })
     const { id } = getMealParamsSchema.parse(request.params)
-    await knex('meals')
+    const deleteMeal = await knex('meals')
       .where({
         user_id: userId,
         id,
       })
       .del()
+    if (deleteMeal === 0) {
+      return reply.status(400).send({
+        message:
+          'Nothing has been deleted, please try with another id or another value to deleted',
+      })
+    }
+    return reply.status(202).send({
+      message: 'Meal  has been deleted',
+    })
   })
 }
